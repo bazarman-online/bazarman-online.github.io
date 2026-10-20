@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#073b2c">
-<title>VERANO | فروشگاه اختصاصی</title>
+<title>Bazarman</title>
 <style>
 :root {
   --green:#073b2c;
@@ -183,6 +183,743 @@ footer p {font-size:12px;line-height:2;color:#d7e0d8}
   .hero h2 {font-size:36px}
   .productvisual {height:165px}
 }
+
+/* BAZARMAN_PREMIUM_REDESIGN_V1 */
+:root {
+  --bm-ink: #172744;
+  --bm-ink-soft: #263c60;
+  --bm-cream: #f7f5ef;
+  --bm-paper: #ffffff;
+  --bm-orange: #e77a38;
+  --bm-orange-dark: #c85d22;
+  --bm-text: #253047;
+  --bm-muted: #737b8a;
+  --bm-border: #e8e7e1;
+  --bm-shadow: 0 12px 35px rgba(23, 39, 68, .08);
+  --bm-radius: 20px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
+body {
+  background: var(--bm-cream);
+  color: var(--bm-text);
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  line-height: 1.85;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button, a, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease,
+              background-color .18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(231, 122, 56, .55);
+  outline-offset: 3px;
+}
+
+header {
+  position: relative;
+  overflow: hidden;
+  padding: 25px clamp(16px, 4vw, 56px) 28px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 5% 0%, rgba(231,122,56,.22), transparent 38%),
+    linear-gradient(130deg, #172744 0%, #233b60 58%, #304a6d 100%);
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 12px 32px rgba(23,39,68,.13);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+.brandname {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 19px;
+  color: #fff;
+  background: linear-gradient(145deg, #e98a4c, #bd5728);
+  box-shadow: 0 8px 22px rgba(0,0,0,.16);
+  font-weight: 900;
+  font-size: 19px;
+}
+
+.brandname h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(24px, 4vw, 35px);
+  font-weight: 900;
+  letter-spacing: -.7px;
+}
+
+.brandname p {
+  margin: 2px 0 0;
+  color: #e2e8f1;
+  font-size: 12px;
+}
+
+.cart {
+  min-height: 45px;
+  padding: 9px 17px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 14px;
+  color: #fff;
+  background: rgba(255,255,255,.10);
+  font-weight: 700;
+}
+
+.cart:hover {
+  background: rgba(255,255,255,.18);
+}
+
+.searchbox {
+  display: flex;
+  gap: 9px;
+  width: 100%;
+  max-width: 900px;
+  margin: 25px auto 0;
+  padding: 7px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 9px 28px rgba(0,0,0,.12);
+}
+
+.searchbox input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 15px;
+  border: 0;
+  outline: 0;
+  color: var(--bm-text);
+  background: transparent;
+}
+
+.searchbox input:focus-visible {
+  outline: 0;
+}
+
+.searchbox button,
+.goldbtn,
+.ad button {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 19px;
+  color: #fff;
+  background: var(--bm-orange);
+  font-weight: 800;
+}
+
+.searchbox button:hover,
+.goldbtn:hover,
+.ad button:hover {
+  background: var(--bm-orange-dark);
+}
+
+nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bm-border);
+  background: rgba(255,255,255,.94);
+}
+
+nav a {
+  padding: 8px 16px;
+  border-radius: 11px;
+  color: var(--bm-ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+
+nav a:hover {
+  color: var(--bm-orange-dark);
+  background: #fff0e6;
+}
+
+main {
+  width: min(1440px, 100%);
+  margin-inline: auto;
+  padding: 28px clamp(14px, 3.5vw, 48px) 50px;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(28px, 6vw, 68px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 28px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 10% 95%, rgba(231,122,56,.30), transparent 36%),
+    linear-gradient(120deg, #172744, #294568);
+  box-shadow: var(--bm-shadow);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 240px;
+  height: 240px;
+  inset-inline-end: -75px;
+  top: -95px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255,255,255,.035),
+              0 0 0 58px rgba(255,255,255,.025);
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #ffc49e;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.hero h2 {
+  max-width: 700px;
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: clamp(27px, 5vw, 43px);
+  line-height: 1.5;
+  font-weight: 900;
+}
+
+.hero p {
+  max-width: 650px;
+  margin: 0 0 22px;
+  color: #e0e8f3;
+  font-size: clamp(13px, 2vw, 16px);
+}
+
+.goldbtn {
+  min-height: 47px;
+  padding-inline: 23px;
+  box-shadow: 0 8px 20px rgba(231,122,56,.2);
+}
+
+#categories,
+#products {
+  margin-top: 38px;
+}
+
+.sectionhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.sectionhead h2 {
+  position: relative;
+  margin: 0;
+  padding-inline-start: 13px;
+  color: var(--bm-ink);
+  font-size: clamp(19px, 3vw, 26px);
+  font-weight: 900;
+}
+
+.sectionhead h2::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 18%;
+  width: 4px;
+  height: 64%;
+  border-radius: 4px;
+  background: var(--bm-orange);
+}
+
+.sectionhead > span {
+  color: var(--bm-muted);
+  font-size: 12px;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 13px;
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 112px;
+  padding: 16px 10px;
+  border: 1px solid var(--bm-border);
+  border-radius: 18px;
+  color: var(--bm-ink);
+  background: var(--bm-paper);
+  box-shadow: 0 4px 15px rgba(23,39,68,.025);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.category:hover,
+.category.active,
+.category[aria-pressed="true"] {
+  border-color: rgba(231,122,56,.55);
+  background: #fff5ed;
+  box-shadow: 0 9px 22px rgba(231,122,56,.09);
+}
+
+.toolbar {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.toolbar select {
+  max-width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--bm-border);
+  border-radius: 12px;
+  color: var(--bm-ink);
+  background: #fff;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.product {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--bm-border);
+  border-radius: var(--bm-radius);
+  background: var(--bm-paper);
+  box-shadow: 0 5px 18px rgba(23,39,68,.035);
+  transition: transform .22s ease, box-shadow .22s ease,
+              border-color .22s ease;
+}
+
+.product:hover {
+  transform: translateY(-4px);
+  border-color: #ded9cd;
+  box-shadow: var(--bm-shadow);
+}
+
+.productvisual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  min-height: 170px;
+  background: linear-gradient(145deg, #f3f0e8, #faf9f5);
+}
+
+.productvisual img,
+.productvisual video {
+  display: block;
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+}
+
+.productbody {
+  padding: 16px;
+}
+
+.productbody h3,
+.productbody .producttitle {
+  color: var(--bm-ink);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.8;
+}
+
+.productbody button {
+  min-height: 41px;
+  border: 0;
+  border-radius: 11px;
+  padding: 8px 13px;
+  color: #fff;
+  background: var(--bm-ink);
+  font-weight: 800;
+}
+
+.productbody button:hover {
+  background: var(--bm-orange-dark);
+}
+
+.ad {
+  position: relative;
+  overflow: hidden;
+  margin-top: 36px;
+  padding: clamp(23px, 4vw, 38px);
+  border: 1px solid #f1d3bd;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(231,122,56,.13), transparent 45%),
+    #fffaf5;
+  box-shadow: 0 8px 24px rgba(23,39,68,.04);
+}
+
+.adlabel {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--bm-orange-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.ad h3 {
+  margin: 0 0 8px;
+  color: var(--bm-ink);
+  font-size: clamp(19px, 3vw, 26px);
+}
+
+.ad p {
+  color: #6d6a65;
+}
+
+footer {
+  padding: 38px clamp(18px, 5vw, 60px);
+  color: #e4eaf2;
+  background: var(--bm-ink);
+}
+
+footer h3 {
+  margin-top: 0;
+  color: #fff;
+  font-size: 24px;
+}
+
+footer p {
+  max-width: 850px;
+  color: #c4cedd;
+}
+
+footer a {
+  color: #ffc49e;
+}
+
+.notice {
+  margin-top: 22px;
+  padding: 13px 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 12px;
+  color: #e8dfd5;
+  background: rgba(255,255,255,.06);
+  font-size: 12px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    min-height: 320px;
+  }
+
+  .productvisual {
+    min-height: 205px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .categories {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  header {
+    padding: 18px 15px 21px;
+    border-radius: 0 0 23px 23px;
+  }
+
+  .brand {
+    gap: 12px;
+  }
+
+  .brandname {
+    gap: 10px;
+  }
+
+  .logo {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    font-size: 16px;
+  }
+
+  .brandname h1 {
+    font-size: 25px;
+  }
+
+  .brandname p {
+    max-width: 205px;
+    font-size: 10px;
+  }
+
+  .cart {
+    min-height: 40px;
+    padding: 7px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .searchbox {
+    gap: 5px;
+    margin-top: 18px;
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .searchbox input {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .searchbox button {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  nav {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px 12px;
+    scrollbar-width: thin;
+  }
+
+  nav a {
+    flex: 0 0 auto;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+
+  main {
+    padding: 20px 13px 35px;
+  }
+
+  .hero {
+    min-height: 245px;
+    padding: 26px 21px;
+    border-radius: 22px;
+  }
+
+  .hero h2 {
+    font-size: 28px;
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .goldbtn {
+    max-width: 100%;
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  #categories,
+  #products {
+    margin-top: 29px;
+  }
+
+  .sectionhead {
+    align-items: flex-start;
+  }
+
+  .categories {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .category {
+    min-height: 93px;
+    padding: 11px 5px;
+    border-radius: 15px;
+    font-size: 11px;
+  }
+
+  .toolbar {
+    width: 100%;
+  }
+
+  .toolbar select {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .product {
+    border-radius: 16px;
+  }
+
+  .productvisual {
+    min-height: 125px;
+  }
+
+  .productvisual img,
+  .productvisual video {
+    max-height: 180px;
+  }
+
+  .productbody {
+    padding: 11px;
+    font-size: 12px;
+  }
+
+  .productbody h3,
+  .productbody .producttitle {
+    font-size: 13px;
+  }
+
+  .productbody button {
+    min-height: 39px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+
+  .ad {
+    margin-top: 27px;
+    padding: 20px 16px;
+    border-radius: 19px;
+  }
+
+  footer {
+    padding: 30px 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand {
+    align-items: flex-start;
+  }
+
+  .brandname p {
+    max-width: 150px;
+  }
+
+  .cart {
+    font-size: 11px;
+  }
+
+  .categories {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .products {
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+
+/* BAZARMAN_CATEGORY_IMAGES_V1 */
+.category .category-image {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #f7f3eb;
+}
+.category .category-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.category .category-image img:not([src]) {
+  display: none;
+}
+@media (max-width: 480px) {
+  .category .category-image {
+    width: 62px;
+    height: 62px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -193,7 +930,7 @@ footer p {font-size:12px;line-height:2;color:#d7e0d8}
     <div class="brandname">
       <div class="logo">ب‌ک</div>
       <div>
-        <h1>VERANO</h1>
+        <h1>Bazarman</h1>
         <p>انتخابی خاص، برای سلیقه‌ای خاص</p>
       </div>
     </div>
@@ -229,7 +966,7 @@ footer p {font-size:12px;line-height:2;color:#d7e0d8}
     <div class="categories" id="categoryList"></div>
   </section>
 
-  <section class="ad" id="ads">
+  <section class="ad" id="ads" hidden data-market-ads-master>
     <span class="adlabel">✦ جایگاه تبلیغاتی ویژه</span>
     <h3 id="adTitle">محصول منتخب خود را معرفی کنید</h3>
     <p id="adText">تبلیغات مرتبط با هر دسته در همین بخش نمایش داده می‌شود. فعلاً این جایگاه نمونه است و از پنل مدیریت واقعی تغذیه نمی‌شود.</p>
@@ -255,7 +992,7 @@ footer p {font-size:12px;line-height:2;color:#d7e0d8}
 </main>
 
 <footer id="about">
-  <h3>VERANO</h3>
+  <h3>Bazarman</h3>
   <p>یک فروشگاه چنددسته‌ای با چشم‌انداز ارائه تجربه خرید آسان و متفاوت برای مشتریان ایرانی.</p>
   <p id="contact">ارتباط با فروشگاه: اطلاعات تماس پس از تأیید مالک اضافه می‌شود.</p>
   <div class="notice">نسخه اولیه نمایشی است؛ قیمت‌ها، موجودی و محصولات نمونه‌اند. ثبت سفارش و پرداخت واقعی هنوز فعال نیست.</div>
@@ -324,8 +1061,11 @@ let searchTerm = "";
 function renderCategories() {
  const list = document.getElementById("categoryList");
  list.innerHTML = categories.map(c=>`
- <button class="category" data-category="${c.id}">
-   <span class="emoji">${c.emoji}</span>
+ <button class="category" data-category="${c.id}" aria-label="${c.name}">
+   <span class="category-image">
+     <img src="/category-images/${c.id}.svg"
+          alt="" loading="lazy" width="72" height="72">
+   </span>
    <strong>${c.name}</strong><small>مشاهده محصولات</small>
  </button>`).join("");
  list.querySelectorAll("[data-category]").forEach(el=>{
@@ -421,7 +1161,7 @@ async function loadProducts() {
   updateCart();
   renderProducts();
  } catch (error) {
-  console.error("خطا در دریافت محصولات VERANO:", error);
+  console.error("خطا در دریافت محصولات بازارمن:", error);
   // در صورت قطعی API، صفحه خالی نمی‌ماند؛ این اقلام واقعی نیستند.
   products = demoProducts;
   updateCart();
@@ -450,7 +1190,7 @@ function renderProducts() {
   <div class="productvisual">
    ${p.video_url && /^\/product-videos\/[a-f0-9]{32}\.mp4$/.test(p.video_url)
      ? `<video src="${escapeHTML(p.video_url)}" controls playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain" aria-label="ویدئوی ${escapeHTML(p.name)}"></video>`
-     : p.image_url && /^(https:\/\/|\/)/i.test(p.image_url)
+     : p.image_url && /^\/product-images\/[a-f0-9]{32}\.(?:jpg|png|webp)$/.test(p.image_url)
        ? `<img src="${escapeHTML(p.image_url)}" alt="${escapeHTML(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.remove();this.parentElement.textContent='🛍️'">`
        : p.emoji}
   </div>
@@ -571,10 +1311,16 @@ async function marketLoadAds() {
   if (!response.ok) throw new Error("HTTP " + response.status);
 
   const data = await response.json();
+  const adSection = document.getElementById("ads");
+  if (adSection) {
+   adSection.hidden = data.ads_enabled === false;
+  }
   marketSpecialAds = Array.isArray(data.ads) ? data.ads : [];
   marketAdsLoaded = true;
  } catch (error) {
   console.warn("دریافت تبلیغات ویژه ناموفق بود:", error);
+  const adSection = document.getElementById("ads");
+  if (adSection) adSection.hidden = true;
   marketSpecialAds = [];
   marketAdsLoaded = false;
  }
@@ -772,7 +1518,7 @@ marketLoadAds();
 
     box.innerHTML = `
       <div style="display:flex;justify-content:space-between;gap:12px">
-        <h2 style="margin:0 0 18px">حساب مشتری VERANO</h2>
+        <h2 style="margin:0 0 18px">حساب مشتری بازارمن</h2>
         <button type="button" id="vcClose">بستن ✕</button>
       </div>
       <div id="vcAuthForm">
@@ -922,7 +1668,7 @@ marketLoadAds();
   async function showServerCart() {
     if (!customer) {
       showAccount();
-      message("برای مشاهده سبد خرید ذخیره‌شده، وارد حساب شوید.");
+      message("برای مشاهده سبد خرید، ابتدا وارد حساب شوید.");
       return;
     }
 
@@ -934,6 +1680,7 @@ marketLoadAds();
     }
 
     $("veranoServerCartOverlay")?.remove();
+
     const overlay = document.createElement("div");
     overlay.id = "veranoServerCartOverlay";
     overlay.style.cssText =
@@ -943,42 +1690,78 @@ marketLoadAds();
     const box = document.createElement("div");
     box.style.cssText =
       "background:#fffdf6;color:#173b2e;border-radius:18px;padding:20px;" +
-      "width:100%;max-width:540px;max-height:85vh;overflow:auto";
+      "width:100%;max-width:560px;max-height:90vh;overflow:auto";
 
     box.innerHTML = `
-      <div style="display:flex;justify-content:space-between;gap:10px">
-        <h2>سبد خرید شما</h2><button id="vscClose">بستن ✕</button>
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+        <h2 style="margin:0">سبد خرید شما</h2>
+        <button type="button" id="vscClose">بستن ✕</button>
       </div>
-      <div id="vscItems"></div>
+      <div id="vscItems" style="margin-top:14px"></div>
       <p id="vscTotal" style="font-weight:bold"></p>
+      <hr>
+      <h3>نشانی تحویل و ثبت سفارش</h3>
+      <form id="vscCheckoutForm">
+        <label for="vscAddress">نشانی کامل تحویل</label>
+        <textarea id="vscAddress" required minlength="10" maxlength="500"
+          autocomplete="street-address"
+          style="box-sizing:border-box;width:100%;min-height:90px;padding:12px;margin:8px 0"></textarea>
+        <button id="vscCheckoutButton" type="submit">ثبت سفارش</button>
+      </form>
       <p style="font-size:13px;color:#666">
-        ثبت سفارش و پرداخت آنلاین هنوز فعال نشده است.
-      </p>`;
+        پرداخت آنلاین هنوز فعال نیست. پس از ثبت، سفارش با وضعیت پرداخت‌نشده برای بررسی فروشنده ثبت می‌شود.
+      </p>
+      <hr>
+      <button type="button" id="vscHistoryButton">نمایش تاریخچه سفارش‌ها</button>
+      <section id="vscHistory" hidden>
+        <h3>تاریخچه سفارش‌های شما</h3>
+        <p id="vscHistoryMessage" role="status"></p>
+        <div id="vscHistoryItems"></div>
+      </section>
+    `;
 
     overlay.appendChild(box);
     document.body.appendChild(overlay);
+
     $("vscClose").onclick = () => overlay.remove();
     overlay.addEventListener("click", e => {
       if (e.target === overlay) overlay.remove();
     });
 
+    const money = value => Number(value || 0).toLocaleString("fa-IR");
+    const labels = {
+      awaiting_seller_confirmation: "در انتظار تأیید فروشنده",
+      confirmed: "تأییدشده",
+      processing: "در حال آماده‌سازی",
+      shipped: "ارسال‌شده",
+      delivered: "تحویل‌شده",
+      cancelled: "لغوشده",
+      unpaid: "پرداخت‌نشده",
+      paid: "پرداخت‌شده",
+      partially_cancelled: "بخشی از سفارش لغو شده"
+    };
+    const statusText = value => labels[value] || value || "نامشخص";
+
     async function draw() {
       await refreshCart();
+
       const area = $("vscItems");
+      area.replaceChildren();
+
       if (!serverItems.length) {
         area.textContent = "سبد خرید خالی است.";
-        $("vscTotal").textContent = "جمع کل: ۰";
-        return;
       }
 
       let total = 0;
-      area.replaceChildren();
+      let unavailable = false;
 
       for (const item of serverItems) {
         const row = document.createElement("div");
         row.style.cssText = "border-bottom:1px solid #e5dfd0;padding:12px 0";
+
         const title = document.createElement("strong");
-        title.textContent = (item.product_name || "کالای ناموجود") +
+        title.textContent =
+          (item.product_name || "کالای ناموجود") +
           " — " + (item.store_name || "فروشگاه");
         row.appendChild(title);
 
@@ -986,25 +1769,32 @@ marketLoadAds();
         if (item.available && item.price != null) {
           total += Number(item.line_total || 0);
           details.textContent =
-            Number(item.price).toLocaleString("fa-IR") + " × " +
-            Number(item.quantity).toLocaleString("fa-IR");
+            money(item.price) + " × " + money(item.quantity);
         } else {
+          unavailable = true;
           details.textContent = "این کالا فعلاً قابل خرید نیست.";
         }
         row.appendChild(details);
 
         if (item.available) {
-          for (const [label, action] of [["−", "minus"], ["+", "plus"], ["حذف کالا", "remove"]]) {
+          for (const [label, action] of [
+            ["−", "minus"], ["+", "plus"], ["حذف کالا", "remove"]
+          ]) {
             const button = document.createElement("button");
             button.type = "button";
             button.textContent = label;
             button.onclick = async () => {
+              button.disabled = true;
               try {
                 await getCsrf();
-                if (action === "remove" || (action === "minus" && item.quantity <= 1)) {
-                  await api("/api/customer/cart/" + item.product_id, {method: "DELETE"});
+                if (action === "remove" ||
+                    (action === "minus" && Number(item.quantity) <= 1)) {
+                  await api("/api/customer/cart/" + item.product_id, {
+                    method: "DELETE"
+                  });
                 } else {
-                  const quantity = Number(item.quantity) + (action === "plus" ? 1 : -1);
+                  const quantity = Number(item.quantity) +
+                    (action === "plus" ? 1 : -1);
                   await api("/api/customer/cart/" + item.product_id, {
                     method: "PATCH",
                     body: JSON.stringify({quantity})
@@ -1013,6 +1803,7 @@ marketLoadAds();
                 await draw();
               } catch (e) {
                 alert(e.message);
+                button.disabled = false;
               }
             };
             row.appendChild(button);
@@ -1020,8 +1811,163 @@ marketLoadAds();
         }
         area.appendChild(row);
       }
-      $("vscTotal").textContent = "جمع اقلام قابل خرید: " + total.toLocaleString("fa-IR");
+
+      $("vscTotal").textContent =
+        "جمع اقلام قابل خرید: " + money(total);
+
+      $("vscCheckoutButton").disabled =
+        !serverItems.length || unavailable;
     }
+
+    async function loadHistory() {
+      const area = $("vscHistoryItems");
+      const status = $("vscHistoryMessage");
+      area.replaceChildren();
+      status.textContent = "در حال دریافت تاریخچه سفارش‌ها…";
+
+      try {
+        const data = await api("/api/customer/orders");
+        const orders = Array.isArray(data.orders) ? data.orders : [];
+        status.textContent = orders.length
+          ? "تعداد سفارش‌ها: " + money(orders.length)
+          : "هنوز سفارشی ثبت نکرده‌اید.";
+
+        for (const order of orders) {
+          const card = document.createElement("article");
+          card.style.cssText =
+            "border:1px solid #ddd5c4;border-radius:12px;padding:12px;margin:12px 0";
+
+          const heading = document.createElement("h4");
+          heading.textContent = "سفارش " + (order.order_number || order.id);
+          card.appendChild(heading);
+
+          const summary = document.createElement("p");
+          summary.textContent =
+            "وضعیت: " + statusText(order.order_status) +
+            " | پرداخت: " + statusText(order.payment_status);
+          card.appendChild(summary);
+
+          const amount = document.createElement("p");
+          amount.textContent = "مبلغ کل: " + money(order.total_amount);
+          card.appendChild(amount);
+
+          if (order.created_at) {
+            const date = document.createElement("p");
+            date.textContent = "تاریخ ثبت: " + order.created_at;
+            card.appendChild(date);
+          }
+
+          const address = document.createElement("p");
+          address.textContent = "نشانی تحویل: " + (order.shipping_address || "—");
+          card.appendChild(address);
+
+          const itemsHeading = document.createElement("strong");
+          itemsHeading.textContent = "اقلام سفارش:";
+          card.appendChild(itemsHeading);
+
+          const items = Array.isArray(order.items) ? order.items : [];
+          for (const item of items) {
+            const line = document.createElement("p");
+            line.textContent =
+              (item.product_name || "کالا") +
+              " — " + (item.store_name || "فروشگاه") +
+              " — تعداد: " + money(item.quantity) +
+              " — مبلغ: " + money(item.line_total) +
+              " — وضعیت قلم: " + statusText(item.seller_status);
+            card.appendChild(line);
+          }
+
+          if (order.order_status === "awaiting_seller_confirmation" &&
+              order.payment_status === "unpaid") {
+            const cancel = document.createElement("button");
+            cancel.type = "button";
+            cancel.textContent = "لغو سفارش";
+            cancel.onclick = async () => {
+              if (!confirm("آیا از لغو این سفارش مطمئن هستید؟ سابقه سفارش حفظ می‌شود.")) {
+                return;
+              }
+              cancel.disabled = true;
+              try {
+                await getCsrf();
+                const result = await api(
+                  "/api/customer/orders/" + order.id + "/cancel",
+                  {method: "POST"}
+                );
+                alert(result.message || "درخواست لغو انجام شد.");
+                await loadHistory();
+              } catch (e) {
+                alert(e.message);
+                cancel.disabled = false;
+              }
+            };
+            card.appendChild(cancel);
+          }
+
+          area.appendChild(card);
+        }
+      } catch (e) {
+        status.textContent = e.message || "دریافت تاریخچه ناموفق بود.";
+      }
+    }
+
+    $("vscHistoryButton").onclick = async () => {
+      const history = $("vscHistory");
+      history.hidden = !history.hidden;
+      if (!history.hidden) await loadHistory();
+    };
+
+    let submitting = false;
+    $("vscCheckoutForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      if (submitting) return;
+
+      const address = $("vscAddress").value.trim();
+      if (address.length < 10 || address.length > 500) {
+        alert("نشانی باید بین ۱۰ تا ۵۰۰ نویسه باشد.");
+        return;
+      }
+      if (!serverItems.length || serverItems.some(item => !item.available)) {
+        alert("سبد خرید خالی است یا کالای ناموجود دارد؛ ابتدا سبد را بررسی کنید.");
+        return;
+      }
+      if (!confirm("سفارش با وضعیت پرداخت‌نشده ثبت شود؟ پرداخت آنلاین فعال نیست.")) {
+        return;
+      }
+
+      submitting = true;
+      const button = $("vscCheckoutButton");
+      button.disabled = true;
+      button.textContent = "در حال ثبت سفارش…";
+
+      try {
+        await getCsrf();
+        const result = await api("/api/customer/orders", {
+          method: "POST",
+          body: JSON.stringify({shipping_address: address})
+        });
+
+        alert(
+          (result.message || "سفارش ثبت شد.") +
+          (result.order?.order_number
+            ? "\nشماره سفارش: " + result.order.order_number : "")
+        );
+
+        $("vscAddress").value = "";
+        await draw();
+
+        $("vscHistory").hidden = false;
+        await loadHistory();
+      } catch (e) {
+        alert(e.message || "ثبت سفارش ناموفق بود.");
+      } finally {
+        submitting = false;
+        if ($("vscCheckoutButton")) {
+          $("vscCheckoutButton").textContent = "ثبت سفارش";
+          $("vscCheckoutButton").disabled =
+            !serverItems.length || serverItems.some(item => !item.available);
+        }
+      }
+    });
 
     await draw();
   }
