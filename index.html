@@ -1121,6 +1121,12 @@ footer a {
     <div class="sectionhead">
       <h2 id="productHeading">محصولات پیشنهادی</h2>
       <div class="toolbar">
+        <select id="provinceFilter" aria-label="فیلتر استان">
+          <option value="">همه استان‌ها</option>
+        </select>
+        <select id="cityFilter" aria-label="فیلتر شهر">
+          <option value="">همه شهرها</option>
+        </select>
         <select id="categoryFilter" aria-label="فیلتر دسته‌بندی">
           <option value="">همه دسته‌ها</option>
         </select>
@@ -1286,7 +1292,9 @@ async function loadProducts() {
     emoji: category ? category.emoji : "🛍️",
     image_url: String(p.image_url || p.image || p.image_path || p.photo || ""),
     video_url: String(p.video_url || ""),
-    store_name: String(p.store_name || "")
+    store_name: String(p.store_name || ""),
+    store_province: String(p.store_province || ""),
+    store_city: String(p.store_city || "")
    };
   }).filter(p =>
    Number.isSafeInteger(p.id) && p.id > 0 &&
@@ -1302,21 +1310,67 @@ async function loadProducts() {
    if (!products.some(p => p.id === Number(id))) delete cart[id];
   }
 
+  refreshCityFilter();
   updateCart();
   renderProducts();
  } catch (error) {
   console.error("خطا در دریافت محصولات بازارمن:", error);
   // در صورت قطعی API، صفحه خالی نمی‌ماند؛ این اقلام واقعی نیستند.
   products = demoProducts;
+  refreshCityFilter();
   updateCart();
   renderProducts();
  }
 }
 
+const iranProvinces = [
+ "آذربایجان شرقی","آذربایجان غربی","اردبیل","اصفهان","البرز",
+ "ایلام","بوشهر","تهران","چهارمحال و بختیاری","خراسان جنوبی",
+ "خراسان رضوی","خراسان شمالی","خوزستان","زنجان","سمنان",
+ "سیستان و بلوچستان","فارس","قزوین","قم","کردستان","کرمان",
+ "کرمانشاه","کهگیلویه و بویراحمد","گلستان","گیلان","لرستان",
+ "مازندران","مرکزی","هرمزگان","همدان","یزد"
+];
+
+function refreshCityFilter() {
+ const provinceSelect = document.getElementById("provinceFilter");
+ const citySelect = document.getElementById("cityFilter");
+ if (!provinceSelect || !citySelect) return;
+
+ if (provinceSelect.options.length === 1) {
+  iranProvinces.forEach(province => {
+   const option = document.createElement("option");
+   option.value = province;
+   option.textContent = province;
+   provinceSelect.appendChild(option);
+  });
+ }
+
+ const province = provinceSelect.value;
+ const previousCity = citySelect.value;
+ const cities = [...new Set(
+  products
+   .filter(p => !province || p.store_province === province)
+   .map(p => String(p.store_city || "").trim())
+   .filter(Boolean)
+ )].sort((a, b) => a.localeCompare(b, "fa"));
+
+ citySelect.replaceChildren(new Option("همه شهرها", ""));
+ cities.forEach(city => citySelect.add(new Option(city, city)));
+
+ if (cities.includes(previousCity)) {
+  citySelect.value = previousCity;
+ }
+}
+
 function renderProducts() {
+ const selectedProvince = document.getElementById("provinceFilter").value;
+ const selectedCity = document.getElementById("cityFilter").value;
  let shown = products.filter(p =>
   (!activeCategory || p.cat===activeCategory) &&
-  (!searchTerm || (p.name+" "+p.desc+" "+categoryName(p.cat)).toLowerCase().includes(searchTerm))
+  (!searchTerm || (p.name+" "+p.desc+" "+categoryName(p.cat)).toLowerCase().includes(searchTerm)) &&
+  (!selectedProvince || p.store_province===selectedProvince) &&
+  (!selectedCity || p.store_city===selectedCity)
  );
  const sort = document.getElementById("sortFilter").value;
  if(sort==="low") shown.sort((a,b)=>a.price-b.price);
@@ -1520,6 +1574,12 @@ document.getElementById("searchForm").addEventListener("submit",e=>{
 document.getElementById("categoryFilter").addEventListener("change",e=>{
  selectCategory(e.target.value);
 });
+document.getElementById("provinceFilter").addEventListener("change", () => {
+ document.getElementById("cityFilter").value = "";
+ refreshCityFilter();
+ renderProducts();
+});
+document.getElementById("cityFilter").addEventListener("change", renderProducts);
 document.getElementById("sortFilter").addEventListener("change",renderProducts);
 function showCart() {
  const entries = Object.entries(cart);
