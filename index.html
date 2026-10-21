@@ -1046,8 +1046,9 @@ footer a {
       <video
         id="bazarmanPromoVideo"
         controls
+        autoplay
         playsinline
-        preload="metadata"
+        preload="auto"
         aria-label="ویدئوی تبلیغاتی بازارمن"
         hidden>
       </video>
@@ -2125,10 +2126,29 @@ marketLoadAds();
     document.baseURI
   );
 
+  // تلاش برای پخش خودکار با صدا
+  video.autoplay = true;
+  video.muted = false;
+  video.volume = 1;
+
   video.addEventListener("loadedmetadata", () => {
     if (video.videoWidth > 0 && video.videoHeight > 0) {
       placeholder.hidden = true;
       video.hidden = false;
+
+      // شروع پخش همراه صدا؛ ممکن است مرورگر آن را مسدود کند
+      video.muted = false;
+
+      const playback = video.play();
+
+      if (playback && typeof playback.catch === "function") {
+        playback.catch((error) => {
+          console.warn(
+            "پخش خودکار با صدا توسط مرورگر مسدود شد؛ از کنترل‌های ویدئو استفاده کنید.",
+            error
+          );
+        });
+      }
     }
   });
 
