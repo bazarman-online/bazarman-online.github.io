@@ -2116,10 +2116,14 @@ marketLoadAds();
 
   if (!video || !placeholder) return;
 
-  // ویدئوی تبلیغاتی ذخیره‌شده در مخزن سایت
+  // تشخیص خودکار نسخه ویدیو برای جلوگیری از نمایش نسخه قدیمی
   video.hidden = true;
   placeholder.hidden = false;
-  video.src = "./assets/videos/bazarman-promo.mp4";
+
+  const videoUrl = new URL(
+    "./assets/videos/bazarman-promo.mp4",
+    document.baseURI
+  );
 
   video.addEventListener("loadedmetadata", () => {
     if (video.videoWidth > 0 && video.videoHeight > 0) {
@@ -2133,7 +2137,26 @@ marketLoadAds();
     placeholder.hidden = false;
   });
 
-  video.load();
+  fetch(videoUrl.href, {
+    method: "HEAD",
+    cache: "no-store"
+  })
+    .then((response) => {
+      const version =
+        response.headers.get("ETag") ||
+        response.headers.get("Last-Modified");
+
+      if (response.ok && version) {
+        videoUrl.searchParams.set("v", version);
+      }
+
+      video.src = videoUrl.href;
+      video.load();
+    })
+    .catch(() => {
+      video.src = videoUrl.href;
+      video.load();
+    });
 })();
 </script>
 
