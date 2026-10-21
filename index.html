@@ -939,6 +939,7 @@ footer a {
 }
 
 .video-ad-frame {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   max-height: 560px;
@@ -946,6 +947,41 @@ footer a {
   border: 1px solid rgba(255,255,255,.16);
   border-radius: 18px;
   background: rgba(7, 16, 31, .72);
+}
+
+.video-ad-sound-button {
+  position: absolute;
+  z-index: 5;
+  right: 14px;
+  bottom: 14px;
+  padding: 11px 16px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 12px;
+  background: rgba(9,20,38,.92);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(0,0,0,.3);
+}
+
+.video-ad-sound-button:focus-visible {
+  outline: 3px solid #ffc49e;
+  outline-offset: 3px;
+}
+
+.video-ad-sound-button[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  .video-ad-sound-button {
+    right: 8px;
+    bottom: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
 }
 
 .video-ad-frame video {
@@ -1047,11 +1083,22 @@ footer a {
         id="bazarmanPromoVideo"
         controls
         autoplay
+        muted
         playsinline
         preload="auto"
         aria-label="ویدئوی تبلیغاتی بازارمن"
         hidden>
       </video>
+
+      <button
+        type="button"
+        id="bazarmanVideoSoundButton"
+        class="video-ad-sound-button"
+        aria-label="فعال کردن صدای ویدئوی تبلیغاتی"
+        aria-pressed="false"
+        hidden>
+        🔊 فعال‌کردن صدا
+      </button>
     </div>
   </section>
 
@@ -2126,9 +2173,14 @@ marketLoadAds();
     document.baseURI
   );
 
-  // تلاش برای پخش خودکار با صدا
+  const soundButton = document.getElementById(
+    "bazarmanVideoSoundButton"
+  );
+
+  // پخش خودکار بی‌صدا برای سازگاری بهتر با مرورگرهای موبایل
   video.autoplay = true;
-  video.muted = false;
+  video.muted = true;
+  video.defaultMuted = true;
   video.volume = 1;
 
   video.addEventListener("loadedmetadata", () => {
@@ -2136,21 +2188,50 @@ marketLoadAds();
       placeholder.hidden = true;
       video.hidden = false;
 
-      // شروع پخش همراه صدا؛ ممکن است مرورگر آن را مسدود کند
-      video.muted = false;
+      if (soundButton) {
+        soundButton.hidden = false;
+      }
+
+      // تلاش برای شروع خودکار؛ صدا تا لمس دکمه خاموش می‌ماند
+      video.muted = true;
 
       const playback = video.play();
 
       if (playback && typeof playback.catch === "function") {
         playback.catch((error) => {
-          console.warn(
-            "پخش خودکار با صدا توسط مرورگر مسدود شد؛ از کنترل‌های ویدئو استفاده کنید.",
-            error
-          );
+          console.warn("مرورگر پخش خودکار را نپذیرفت:", error);
         });
       }
     }
   });
+
+  if (soundButton) {
+    soundButton.addEventListener("click", async () => {
+      try {
+        if (video.muted) {
+          video.muted = false;
+          video.volume = 1;
+          await video.play();
+
+          soundButton.textContent = "🔇 قطع صدا";
+          soundButton.setAttribute("aria-pressed", "true");
+          soundButton.setAttribute("aria-label", "قطع صدای ویدئو");
+        } else {
+          video.muted = true;
+
+          soundButton.textContent = "🔊 فعال‌کردن صدا";
+          soundButton.setAttribute("aria-pressed", "false");
+          soundButton.setAttribute(
+            "aria-label",
+            "فعال کردن صدای ویدئوی تبلیغاتی"
+          );
+        }
+      } catch (error) {
+        console.warn("فعال‌کردن صدا یا شروع پخش ناموفق بود:", error);
+        video.muted = true;
+      }
+    });
+  }
 
   video.addEventListener("error", () => {
     video.hidden = true;
