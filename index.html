@@ -1654,6 +1654,7 @@ marketLoadAds();
   let customer = null;
   let serverItems = [];
   let busy = false;
+  let pendingOtpPhone = "";
 
   const $ = id => document.getElementById(id);
 
@@ -1676,7 +1677,9 @@ marketLoadAds();
 
     if (data.csrf_token) csrf = data.csrf_token;
     if (!response.ok) {
-      throw new Error(data.error || "درخواست انجام نشد.");
+      const error = new Error(data.error || "درخواست انجام نشد.");
+      error.status = response.status;
+      throw error;
     }
     return data;
   }
@@ -1747,8 +1750,17 @@ marketLoadAds();
         <button type="button" id="vcLogout">خروج از حساب</button>
       </div>
       <p id="veranoCustomerMessage" role="status" aria-live="polite"></p>
+      <div id="vcOtpSection" hidden style="margin-top:14px;padding:12px;border:1px solid #ddd;border-radius:12px">
+        <label for="vcOtpCode">کد تأیید پیامکی شش‌رقمی</label>
+        <input id="vcOtpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" id="vcVerifyOtp">تأیید کد</button>
+          <button type="button" id="vcResendOtp">ارسال مجدد کد</button>
+        </div>
+      </div>
       <p style="font-size:12px;color:#666">
-        تأیید پیامکی هنوز فعال نیست؛ شماره موبایل به‌صورت تأییدشده ثبت نمی‌شود.
+        برای فعال‌کردن حساب مشتری، شماره موبایل باید تأیید شود.
       </p>`;
 
     overlay.appendChild(box);
@@ -1761,6 +1773,8 @@ marketLoadAds();
 
     $("vcLogin").onclick = () => authenticate(false);
     $("vcRegister").onclick = () => authenticate(true);
+    $("vcVerifyOtp").onclick = verifyCustomerOtp;
+    $("vcResendOtp").onclick = resendCustomerOtp;
     $("vcLogout").onclick = logout;
 
     if (customer) renderAccount();
@@ -1776,6 +1790,59 @@ marketLoadAds();
       $("veranoAccountButton").textContent = "حساب: " + customer.full_name;
     } else {
       $("veranoAccountButton").textContent = "ورود / حساب مشتری";
+    }
+  }
+
+  async function requestCustomerOtp(phone) {
+    pendingOtpPhone = phone;
+    $("vcOtpSection").hidden = false;
+    await api("/api/customer/request-otp", {
+      method: "POST",
+      body: JSON.stringify({phone: pendingOtpPhone})
+    });
+    message("اگر حساب واجد شرایط باشد، کد تأیید ارسال می‌شود.");
+  }
+
+  async function verifyCustomerOtp() {
+    if (busy) return;
+    busy = true;
+    try {
+      await getCsrf();
+      const phone = pendingOtpPhone || $("vcPhone").value.trim();
+      const code = $("vcOtpCode").value.trim();
+      if (!phone || !/^[0-9]{6}$/.test(code)) {
+        throw new Error("شماره موبایل و کد شش‌رقمی معتبر را وارد کنید.");
+      }
+      await api("/api/customer/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({phone, code})
+      });
+      $("vcOtpSection").hidden = true;
+      $("vcOtpCode").value = "";
+      pendingOtpPhone = "";
+      message("شماره موبایل تأیید شد؛ اکنون با رمز عبور وارد شوید.");
+    } catch (e) {
+      message(e.message || "تأیید کد انجام نشد.");
+    } finally {
+      busy = false;
+    }
+  }
+
+  async function resendCustomerOtp() {
+    if (busy) return;
+    const phone = pendingOtpPhone || $("vcPhone").value.trim();
+    if (!phone) {
+      message("ابتدا شماره موبایل را وارد کنید.");
+      return;
+    }
+    busy = true;
+    try {
+      await getCsrf();
+      await requestCustomerOtp(phone);
+    } catch (e) {
+      message(e.message || "درخواست ارسال مجدد انجام نشد.");
+    } finally {
+      busy = false;
     }
   }
 
@@ -1798,19 +1865,29 @@ marketLoadAds();
           method: "POST",
           body: JSON.stringify({full_name, phone, password})
         });
-        message("ثبت‌نام انجام شد. اکنون با شماره موبایل و رمز عبور وارد شوید.");
+        await requestCustomerOtp(phone);
       } else {
         const data = await api("/api/customer/login", {
           method: "POST",
           body: JSON.stringify({phone, password})
         });
         customer = data.customer;
+        $("vcOtpSection").hidden = true;
+        pendingOtpPhone = "";
         await refreshCart();
         renderAccount();
         message("ورود موفق بود.");
       }
     } catch (e) {
-      message(e.message || "خطا در ارتباط با سرور.");
+      if (!register && e.status === 403) {
+        try {
+          await requestCustomerOtp($("vcPhone").value.trim());
+        } catch (otpError) {
+          message(otpError.message || e.message);
+        }
+      } else {
+        message(e.message || "خطا در ارتباط با سرور.");
+      }
     } finally {
       busy = false;
     }
