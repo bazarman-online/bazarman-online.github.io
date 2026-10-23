@@ -1148,6 +1148,7 @@ footer a {
   <div class="notice">نسخه اولیه نمایشی است؛ قیمت‌ها، موجودی و محصولات نمونه‌اند. ثبت سفارش و پرداخت واقعی هنوز فعال نیست.</div>
 </footer>
 
+<script>window.BAZAARMAN_API_BASE_URL = "https://bazarman-backend-test.onrender.com";</script>
 <script>
 const categories = [
  {id:"fashion",name:"پوشاک",emoji:"👕"},
@@ -1265,10 +1266,10 @@ async function loadProducts() {
  list.innerHTML = '<div class="empty">در حال دریافت محصولات فروشگاه...</div>';
 
  try {
-  const response = await fetch("/api/public/products", {
+  const response = await fetch(window.BAZAARMAN_API_BASE_URL + "/api/public/products", {
    method: "GET",
    headers: {"Accept": "application/json"},
-   credentials: "same-origin"
+   credentials: "include"
   });
 
   if (!response.ok) throw new Error("HTTP " + response.status);
@@ -1500,10 +1501,10 @@ function marketRenderAd() {
 
 async function marketLoadAds() {
  try {
-  const response = await fetch("/api/public/ads", {
+  const response = await fetch(window.BAZAARMAN_API_BASE_URL + "/api/public/ads", {
    method: "GET",
    headers: {"Accept":"application/json"},
-   credentials: "same-origin",
+   credentials: "include",
    cache: "no-store"
   });
   if (!response.ok) throw new Error("HTTP " + response.status);
@@ -1667,8 +1668,11 @@ marketLoadAds();
       ...(options.headers || {})
     };
 
-    const response = await fetch(url, {
-      credentials: "same-origin",
+    const requestUrl = url.startsWith("/api/")
+      ? window.BAZAARMAN_API_BASE_URL + url
+      : url;
+    const response = await fetch(requestUrl, {
+      credentials: "include",
       ...options,
       headers
     });
@@ -1879,7 +1883,9 @@ marketLoadAds();
         message("ورود موفق بود.");
       }
     } catch (e) {
-      if (!register && e.status === 403) {
+      if (register && e.status === 409) {
+        message("این شماره قبلاً ثبت شده است. برای ادامه، شماره و رمز عبور همان حساب را وارد کنید و «ورود» را بزنید. اگر شماره تأیید نشده باشد، پس از بررسی رمز، درخواست کد تأیید انجام می‌شود.");
+      } else if (!register && e.status === 403) {
         try {
           await requestCustomerOtp($("vcPhone").value.trim());
         } catch (otpError) {
