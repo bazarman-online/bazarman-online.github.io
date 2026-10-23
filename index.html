@@ -1817,6 +1817,39 @@ marketLoadAds();
     }
   }
 
+  let otpResendTimer = null;
+  let otpResendUntil = 0;
+
+  function startOtpResendCountdown() {
+    const button = $("vcResendOtp");
+    if (!button) return;
+
+    if (otpResendTimer !== null) {
+      clearInterval(otpResendTimer);
+      otpResendTimer = null;
+    }
+
+    otpResendUntil = Date.now() + 120000;
+    button.disabled = true;
+
+    const updateButton = () => {
+      const remaining = Math.max(0, Math.ceil((otpResendUntil - Date.now()) / 1000));
+
+      if (remaining > 0) {
+        button.textContent = "ارسال مجدد کد (" + remaining + " ثانیه)";
+        button.disabled = true;
+      } else {
+        if (otpResendTimer !== null) clearInterval(otpResendTimer);
+        otpResendTimer = null;
+        button.textContent = "ارسال مجدد کد";
+        button.disabled = false;
+      }
+    };
+
+    updateButton();
+    otpResendTimer = setInterval(updateButton, 250);
+  }
+
   async function requestCustomerOtp(phone) {
     pendingOtpPhone = phone;
     $("vcOtpSection").hidden = false;
@@ -1824,6 +1857,7 @@ marketLoadAds();
       method: "POST",
       body: JSON.stringify({phone: pendingOtpPhone})
     });
+    startOtpResendCountdown();
     message("اگر حساب واجد شرایط باشد، کد تأیید ارسال می‌شود.");
   }
 
@@ -1853,7 +1887,7 @@ marketLoadAds();
   }
 
   async function resendCustomerOtp() {
-    if (busy) return;
+    if (busy || Date.now() < otpResendUntil) return;
     const phone = pendingOtpPhone || $("vcPhone").value.trim();
     if (!phone) {
       message("ابتدا شماره موبایل را وارد کنید.");
