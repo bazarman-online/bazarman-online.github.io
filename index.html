@@ -1102,6 +1102,23 @@ footer a {
     </div>
   </section>
 
+  <div class="toolbar">
+    <select id="provinceFilter" aria-label="فیلتر استان">
+      <option value="">همه استان‌ها</option>
+    </select>
+    <select id="cityFilter" aria-label="فیلتر شهر">
+      <option value="">همه شهرها</option>
+    </select>
+    <select id="categoryFilter" aria-label="فیلتر دسته‌بندی">
+      <option value="">همه دسته‌ها</option>
+    </select>
+    <select id="sortFilter" aria-label="مرتب‌سازی محصولات">
+      <option value="default">مرتب‌سازی</option>
+      <option value="low">ارزان‌ترین</option>
+      <option value="high">گران‌ترین</option>
+    </select>
+  </div>
+
   <section id="categories">
     <div class="sectionhead">
       <h2>دسته‌بندی‌های فروشگاه</h2>
@@ -1120,22 +1137,6 @@ footer a {
   <section id="products">
     <div class="sectionhead">
       <h2 id="productHeading">محصولات پیشنهادی</h2>
-      <div class="toolbar">
-        <select id="provinceFilter" aria-label="فیلتر استان">
-          <option value="">همه استان‌ها</option>
-        </select>
-        <select id="cityFilter" aria-label="فیلتر شهر">
-          <option value="">همه شهرها</option>
-        </select>
-        <select id="categoryFilter" aria-label="فیلتر دسته‌بندی">
-          <option value="">همه دسته‌ها</option>
-        </select>
-        <select id="sortFilter" aria-label="مرتب‌سازی محصولات">
-          <option value="default">مرتب‌سازی</option>
-          <option value="low">ارزان‌ترین</option>
-          <option value="high">گران‌ترین</option>
-        </select>
-      </div>
     </div>
     <div class="products" id="productList"></div>
   </section>
