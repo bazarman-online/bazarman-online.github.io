@@ -1728,6 +1728,193 @@ marketLoadAds();
     button.addEventListener("click", showAccount);
   }
 
+
+  function addSellerAccountButton() {
+    if (document.getElementById("bazarmanSellerButton")) return;
+    const cartButton = document.getElementById("cartButton");
+    if (!cartButton) return;
+
+    const button = document.createElement("button");
+    button.id = "bazarmanSellerButton";
+    button.type = "button";
+    button.className = "cart";
+    button.style.marginInlineStart = "8px";
+    button.textContent = "ورود فروشنده";
+    cartButton.insertAdjacentElement("beforebegin", button);
+    button.addEventListener("click", showSellerAccount);
+  }
+
+  async function showSellerAccount() {
+    document.getElementById("bazarmanSellerOverlay")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "bazarmanSellerOverlay";
+    overlay.style.cssText =
+      "position:fixed;inset:0;background:#0009;z-index:10002;" +
+      "display:flex;align-items:center;justify-content:center;padding:14px";
+
+    const box = document.createElement("div");
+    box.dir = "rtl";
+    box.style.cssText =
+      "background:#fffdf6;color:#173b2e;border-radius:18px;" +
+      "padding:22px;width:100%;max-width:460px;max-height:90vh;overflow:auto";
+
+    box.innerHTML = `
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+        <h2 style="margin:0 0 18px">حساب فروشنده بازارمن</h2>
+        <button type="button" id="bsmClose">بستن ✕</button>
+      </div>
+      <form id="bsmForm">
+        <label for="bsmStore">نام فروشگاه</label>
+        <input id="bsmStore" required maxlength="100" autocomplete="organization"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+
+        <label for="bsmOwner">نام و نام خانوادگی مالک</label>
+        <input id="bsmOwner" required maxlength="100" autocomplete="name"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+
+        <label for="bsmPhone">شماره موبایل</label>
+        <input id="bsmPhone" required autocomplete="tel" inputmode="tel"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+
+        <label for="bsmEmail">ایمیل (اختیاری)</label>
+        <input id="bsmEmail" type="email" maxlength="254" autocomplete="email"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+
+        <label for="bsmPassword">رمز عبور (حداقل ۱۲ نویسه)</label>
+        <input id="bsmPassword" type="password" required minlength="12" maxlength="128"
+          autocomplete="current-password"
+          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" id="bsmLogin">ورود فروشنده</button>
+          <button type="button" id="bsmRegister">ثبت‌نام فروشگاه</button>
+        </div>
+      </form>
+      <p id="bsmMessage" role="status" aria-live="polite"></p>
+      <div id="bsmSignedIn" hidden>
+        <p id="bsmStatus"></p>
+        <button type="button" id="bsmLogout">خروج از حساب فروشنده</button>
+      </div>
+      <p style="font-size:12px;color:#666">
+        ثبت‌نام به‌معنای فعال‌شدن فروشگاه نیست. حساب جدید پس از ثبت‌نام در انتظار تأیید مدیر می‌ماند.
+      </p>`;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    const el = id => document.getElementById(id);
+    const showMessage = text => { el("bsmMessage").textContent = text; };
+    const setBusy = value => {
+      el("bsmLogin").disabled = value;
+      el("bsmRegister").disabled = value;
+      el("bsmLogout").disabled = value;
+    };
+
+    el("bsmClose").onclick = () => overlay.remove();
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) overlay.remove();
+    });
+
+    async function runSellerAction(register) {
+      setBusy(true);
+      try {
+        await getCsrf();
+        const phone = el("bsmPhone").value.trim();
+        const password = el("bsmPassword").value;
+
+        if (!phone || !password) {
+          throw new Error("شماره موبایل و رمز عبور را وارد کنید.");
+        }
+
+        if (register) {
+          const store_name = el("bsmStore").value.trim();
+          const owner_name = el("bsmOwner").value.trim();
+          const email = el("bsmEmail").value.trim();
+
+          if (!store_name || !owner_name) {
+            throw new Error("نام فروشگاه و نام مالک الزامی است.");
+          }
+          if (password.length < 12) {
+            throw new Error("رمز عبور باید حداقل ۱۲ نویسه باشد.");
+          }
+
+          const result = await api("/api/register", {
+            method: "POST",
+            body: JSON.stringify({store_name, owner_name, phone, email, password})
+          });
+          showMessage(result.message || "ثبت‌نام انجام شد.");
+          el("bsmStatus").textContent =
+            "وضعیت فروشگاه: در انتظار تأیید مدیر. تا زمان فعال‌شدن، امکان افزودن محصول وجود ندارد.";
+          el("bsmSignedIn").hidden = true;
+        } else {
+          const result = await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({phone, password})
+          });
+
+          // ورود فروشنده نشست مشترک سرور را جایگزین می‌کند؛ توکن جدید را دریافت می‌کنیم.
+          await getCsrf();
+
+          // نشست مشترک سرور اکنون متعلق به فروشنده است.
+          customer = null;
+          serverItems = [];
+          renderCartCount();
+          $("veranoCustomerOverlay")?.remove();
+          const customerButton = $("veranoAccountButton");
+          if (customerButton) {
+            customerButton.textContent = "ورود / حساب مشتری";
+          }
+
+          const seller = result.seller || {};
+          const statusText = seller.status === "active"
+            ? "حساب فعال است. مرحلهٔ اتصال پنل محصولات هنوز باید تکمیل و آزمایش شود."
+            : seller.status === "pending"
+              ? "فروشگاه در انتظار تأیید مدیر است؛ فعلاً امکان افزودن محصول ندارد."
+              : "وضعیت حساب: " + (seller.status || "نامشخص");
+
+          el("bsmStatus").textContent =
+            "فروشگاه: " + (seller.store_name || "") + " — " + statusText;
+          el("bsmSignedIn").hidden = false;
+          showMessage(result.message || "ورود انجام شد.");
+        }
+      } catch (e) {
+        showMessage(e.message || "ارتباط با سرور انجام نشد.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    el("bsmLogin").onclick = () => runSellerAction(false);
+    el("bsmRegister").onclick = () => runSellerAction(true);
+
+    el("bsmLogout").onclick = async () => {
+      setBusy(true);
+      try {
+        await getCsrf();
+        await api("/api/logout", {method: "POST"});
+        await getCsrf();
+
+        // خروج فروشنده نشست مشترک را پاک کرده است.
+        customer = null;
+        serverItems = [];
+        renderCartCount();
+        $("veranoCustomerOverlay")?.remove();
+        const customerButton = $("veranoAccountButton");
+        if (customerButton) {
+          customerButton.textContent = "ورود / حساب مشتری";
+        }
+
+        el("bsmSignedIn").hidden = true;
+        showMessage("از حساب فروشنده خارج شدید.");
+      } catch (e) {
+        showMessage(e.message || "خروج انجام نشد.");
+      } finally {
+        setBusy(false);
+      }
+    };
+  }
+
   function showAccount() {
     $("veranoCustomerOverlay")?.remove();
 
@@ -1930,6 +2117,11 @@ marketLoadAds();
           method: "POST",
           body: JSON.stringify({phone, password})
         });
+        // ورود مشتری نشست قبلی فروشنده را جایگزین می‌کند.
+        $("bazarmanSellerOverlay")?.remove();
+        const sellerButton = $("bazarmanSellerButton");
+        if (sellerButton) sellerButton.textContent = "ورود فروشنده";
+
         customer = data.customer;
         $("vcOtpSection").hidden = true;
         pendingOtpPhone = "";
@@ -2335,6 +2527,7 @@ marketLoadAds();
 
   async function init() {
     addAccountButton();
+    addSellerAccountButton();
     try {
       await getCsrf();
       const data = await api("/api/customer/me");
