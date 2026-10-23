@@ -1658,6 +1658,20 @@ marketLoadAds();
   let pendingOtpPhone = "";
 
   const $ = id => document.getElementById(id);
+  document.addEventListener("click", event => {
+    const button = event.target.closest("#vcTogglePassword");
+    if (!button) return;
+
+    const input = document.getElementById("vcPassword");
+    if (!input) return;
+
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    button.textContent = show ? "🙈" : "👁";
+    button.setAttribute("aria-label", show ? "پنهان کردن رمز عبور" : "نمایش رمز عبور");
+    button.setAttribute("aria-pressed", String(show));
+  });
+
 
   async function api(url, options = {}) {
     const headers = {
@@ -1740,9 +1754,15 @@ marketLoadAds();
         <input id="vcPhone" autocomplete="tel" inputmode="tel"
           style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
         <label>رمز عبور (حداقل ۱۰ نویسه)</label>
-        <input id="vcPassword" type="password" autocomplete="current-password"
-          minlength="10" maxlength="256"
-          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+        <div style="position:relative;width:100%;margin:6px 0 12px">
+          <input id="vcPassword" type="password" autocomplete="current-password"
+            minlength="10" maxlength="256"
+            style="box-sizing:border-box;width:100%;padding:12px 48px 12px 12px;margin:0">
+          <button type="button" id="vcTogglePassword"
+            aria-label="نمایش رمز عبور" aria-pressed="false"
+            style="position:absolute;left:5px;top:50%;transform:translateY(-50%);width:40px;height:40px;padding:0;border:0;background:transparent;cursor:pointer;font-size:20px"
+            title="نمایش یا پنهان کردن رمز">👁</button>
+        </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" id="vcLogin">ورود</button>
           <button type="button" id="vcRegister">ثبت‌نام</button>
