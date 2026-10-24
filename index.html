@@ -1660,6 +1660,22 @@ marketLoadAds();
 
   const $ = id => document.getElementById(id);
   document.addEventListener("click", event => {
+    const sellerButton = event.target.closest("#bsmTogglePassword");
+    if (sellerButton) {
+      const sellerInput = document.getElementById("bsmPassword");
+      if (!sellerInput) return;
+
+      const showSellerPassword = sellerInput.type === "password";
+      sellerInput.type = showSellerPassword ? "text" : "password";
+      sellerButton.textContent = showSellerPassword ? "🙈" : "👁";
+      sellerButton.setAttribute(
+        "aria-label",
+        showSellerPassword ? "پنهان کردن رمز عبور" : "نمایش رمز عبور"
+      );
+      sellerButton.setAttribute("aria-pressed", String(showSellerPassword));
+      return;
+    }
+
     const button = event.target.closest("#vcTogglePassword");
     if (!button) return;
 
@@ -1782,9 +1798,15 @@ marketLoadAds();
           style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
 
         <label for="bsmPassword">رمز عبور (حداقل ۱۲ نویسه)</label>
-        <input id="bsmPassword" type="password" required minlength="12" maxlength="128"
-          autocomplete="current-password"
-          style="box-sizing:border-box;width:100%;padding:12px;margin:6px 0 12px">
+        <div style="position:relative;width:100%;margin:6px 0 12px">
+          <input id="bsmPassword" type="password" required minlength="12" maxlength="128"
+            autocomplete="current-password"
+            style="box-sizing:border-box;width:100%;padding:12px 48px 12px 12px;margin:0">
+          <button type="button" id="bsmTogglePassword"
+            aria-label="نمایش رمز عبور" aria-pressed="false"
+            style="position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;padding:6px;cursor:pointer;font-size:18px"
+          >👁</button>
+        </div>
 
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" id="bsmLogin">ورود فروشنده</button>
