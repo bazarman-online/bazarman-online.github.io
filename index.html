@@ -1029,6 +1029,39 @@ footer a {
   display: none !important;
 }
 
+
+/* BazaarMan account-button touch feedback */
+#veranoAccountButton,
+#bazarmanSellerButton {
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+#veranoAccountButton:active,
+#bazarmanSellerButton:active {
+  transform: scale(0.95);
+  filter: brightness(0.88);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.18);
+}
+
+#veranoAccountButton:focus-visible,
+#bazarmanSellerButton:focus-visible {
+  outline: 3px solid #e9a23b;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #veranoAccountButton,
+  #bazarmanSellerButton {
+    transition: none;
+  }
+}
+
 </style>
 </head>
 <body>
