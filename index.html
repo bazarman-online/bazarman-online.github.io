@@ -1481,40 +1481,68 @@ function marketRenderAd() {
  const ad = matching.find(item => item.category === category) ||
             matching.find(item => !item.category);
 
- let oldImage = section.querySelector("[data-market-ad-image]");
- let oldLink = section.querySelector("[data-market-ad-link]");
+ section.querySelectorAll(
+  "[data-market-ad-image], [data-market-ad-video], [data-market-ad-link]"
+ ).forEach(el => {
+  if (el.tagName === "VIDEO") el.pause();
+  el.remove();
+ });
 
  if (!ad) {
   title.textContent = category
    ? "تبلیغات ویژه " + (categories.find(c => c.id === category)?.name || "فروشگاه")
    : "محصول منتخب خود را معرفی کنید";
-
   description.textContent =
    "تبلیغات مرتبط با هر دسته در این بخش نمایش داده می‌شود.";
-
-  if (oldImage) oldImage.remove();
-  if (oldLink) oldLink.remove();
   return;
  }
 
  title.textContent = String(ad.title || "تبلیغات ویژه");
  description.textContent = String(ad.description || "");
 
- if (oldImage) oldImage.remove();
- if (oldLink) oldLink.remove();
+ const rawVideoUrl = String(ad.video_url || "").trim();
+ let videoUrl = "";
 
- const imageUrl = marketSafeUrl(ad.image_url, true);
- if (imageUrl) {
-  const image = document.createElement("img");
-  image.dataset.marketAdImage = "1";
-  image.src = imageUrl;
-  image.alt = String(ad.title || "تصویر تبلیغ");
-  image.loading = "lazy";
-  image.referrerPolicy = "no-referrer";
-  image.style.cssText =
-   "display:block;max-width:100%;max-height:240px;object-fit:contain;margin:12px auto;border-radius:10px";
-  image.addEventListener("error", () => image.remove(), {once:true});
-  section.insertBefore(image, description);
+ if (rawVideoUrl.startsWith("/") &&
+     !rawVideoUrl.startsWith("//") &&
+     !rawVideoUrl.includes("\\")) {
+  try {
+   videoUrl = marketSafeUrl(
+    new URL(rawVideoUrl, window.BAZAARMAN_API_BASE_URL).href
+   );
+  } catch (_) {
+   videoUrl = "";
+  }
+ } else {
+  videoUrl = marketSafeUrl(rawVideoUrl);
+ }
+
+ if (videoUrl) {
+  const video = document.createElement("video");
+  video.dataset.marketAdVideo = "1";
+  video.src = videoUrl;
+  video.controls = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.setAttribute("aria-label", String(ad.title || "ویدئوی تبلیغ"));
+  video.style.cssText =
+   "display:block;width:100%;max-width:720px;max-height:320px;object-fit:contain;margin:12px auto;border-radius:10px";
+  video.addEventListener("error", () => video.remove(), {once:true});
+  section.insertBefore(video, description);
+ } else {
+  const imageUrl = marketSafeUrl(ad.image_url, true);
+  if (imageUrl) {
+   const image = document.createElement("img");
+   image.dataset.marketAdImage = "1";
+   image.src = imageUrl;
+   image.alt = String(ad.title || "تصویر تبلیغ");
+   image.loading = "lazy";
+   image.referrerPolicy = "no-referrer";
+   image.style.cssText =
+    "display:block;max-width:100%;max-height:240px;object-fit:contain;margin:12px auto;border-radius:10px";
+   image.addEventListener("error", () => image.remove(), {once:true});
+   section.insertBefore(image, description);
+  }
  }
 
  const targetUrl = marketSafeUrl(ad.target_url);
@@ -1532,7 +1560,6 @@ function marketRenderAd() {
   section.appendChild(link);
  }
 }
-
 async function marketLoadAds() {
  try {
   const response = await fetch(window.BAZAARMAN_API_BASE_URL + "/api/public/ads", {
@@ -1866,6 +1893,36 @@ marketLoadAds();
       el("bsmLogout").disabled = value;
     };
 
+    // BAZARMAN_SELLER_SESSION_RESTORE
+    function displaySeller(seller) {
+      const statusText = seller.status === "active"
+        ? "حساب فعال است. مرحلهٔ اتصال پنل محصولات هنوز باید تکمیل و آزمایش شود."
+        : seller.status === "pending"
+          ? "فروشگاه در انتظار تأیید مدیر است؛ فعلاً امکان افزودن محصول ندارد."
+          : "وضعیت حساب: " + (seller.status || "نامشخص");
+
+      el("bsmStatus").textContent =
+        "فروشگاه: " + (seller.store_name || "") + " — " + statusText;
+      el("bsmForm").hidden = true;
+      el("bsmSignedIn").hidden = false;
+    }
+
+    async function restoreSellerSession() {
+      try {
+        const data = await api("/api/me");
+        if (data && data.seller) {
+          displaySeller(data.seller);
+          showMessage("نشست فروشنده بازیابی شد.");
+        }
+      } catch (_) {
+        // اگر نشست معتبر نیست، فرم ورود و ثبت‌نام در دسترس می‌ماند.
+        el("bsmForm").hidden = false;
+        el("bsmSignedIn").hidden = true;
+      }
+    }
+
+    restoreSellerSession();
+
     el("bsmClose").onclick = () => overlay.remove();
     overlay.addEventListener("click", e => {
       if (e.target === overlay) overlay.remove();
@@ -1928,9 +1985,7 @@ marketLoadAds();
               ? "فروشگاه در انتظار تأیید مدیر است؛ فعلاً امکان افزودن محصول ندارد."
               : "وضعیت حساب: " + (seller.status || "نامشخص");
 
-          el("bsmStatus").textContent =
-            "فروشگاه: " + (seller.store_name || "") + " — " + statusText;
-          el("bsmSignedIn").hidden = false;
+          displaySeller(seller);
           showMessage(result.message || "ورود انجام شد.");
         }
       } catch (e) {
@@ -1961,6 +2016,8 @@ marketLoadAds();
         }
 
         el("bsmSignedIn").hidden = true;
+        el("bsmForm").hidden = false;
+        el("bsmPassword").value = "";
         showMessage("از حساب فروشنده خارج شدید.");
       } catch (e) {
         showMessage(e.message || "خروج انجام نشد.");
