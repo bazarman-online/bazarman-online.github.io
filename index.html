@@ -1905,6 +1905,9 @@ marketLoadAds();
         "فروشگاه: " + (seller.store_name || "") + " — " + statusText;
       el("bsmForm").hidden = true;
       el("bsmSignedIn").hidden = false;
+      if (seller.status === "active" && window.BAZARMAN_INIT_SELLER_PRODUCTS) {
+        window.BAZARMAN_INIT_SELLER_PRODUCTS(seller, el("bsmSignedIn"));
+      }
     }
 
     async function restoreSellerSession() {
@@ -2764,5 +2767,6 @@ marketLoadAds();
 })();
 </script>
 
+<script src="seller-products.js"></script>
 </body>
 </html>
