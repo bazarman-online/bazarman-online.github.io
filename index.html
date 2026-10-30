@@ -2310,6 +2310,41 @@ marketLoadAds();
       </div>
       <div id="vcSignedIn" hidden>
         <p id="vcCustomerName"></p>
+
+        <section id="vcDashboard" dir="rtl"
+          style="margin:16px 0;padding:14px;border:1px solid #e5e7eb;border-radius:18px;background:#f8fafc">
+          <h3 style="margin:0 0 14px;color:#173b32">داشبورد مشتری</h3>
+
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
+              <small>همه سفارش‌ها</small>
+              <strong id="vcDashOrders" style="display:block;font-size:23px">—</strong>
+            </div>
+            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
+              <small>سفارش‌های در جریان</small>
+              <strong id="vcDashActive" style="display:block;font-size:23px">—</strong>
+            </div>
+            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
+              <small>اقلام سبد خرید</small>
+              <strong id="vcDashCart" style="display:block;font-size:23px">—</strong>
+            </div>
+            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
+              <small>علاقه‌مندی‌ها</small>
+              <strong id="vcDashFavorites" style="display:block;font-size:23px">—</strong>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;padding:12px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
+            <strong>آخرین سفارش‌ها</strong>
+            <div id="vcDashRecent" style="margin-top:8px;font-size:13px;color:#475569">
+              در حال دریافت اطلاعات...
+            </div>
+          </div>
+
+          <button type="button" id="vcDashRefresh"
+            style="margin-top:12px;width:100%">به‌روزرسانی داشبورد</button>
+        </section>
+
         <p>سبد خرید شما روی سرور ذخیره می‌شود.</p>
         <button type="button" id="vcLogout">خروج از حساب</button>
       </div>
@@ -2338,6 +2373,7 @@ marketLoadAds();
     $("vcLogin").onclick = () => authenticate(false);
     $("vcRegister").onclick = () => authenticate(true);
     $("vcVerifyOtp").onclick = verifyCustomerOtp;
+    $("vcDashRefresh").onclick = loadCustomerDashboard;
     $("vcResendOtp").onclick = resendCustomerOtp;
     $("vcLogout").onclick = logout;
 
@@ -2352,8 +2388,53 @@ marketLoadAds();
       $("vcCustomerName").textContent =
         "خوش آمدید، " + customer.full_name;
       $("veranoAccountButton").textContent = "👤 حساب کاربری من";
+      loadCustomerDashboard();
     } else {
       $("veranoAccountButton").textContent = "👤 حساب کاربری من";
+    }
+  }
+
+  async function loadCustomerDashboard() {
+    const recent = $("vcDashRecent");
+    if (!customer || !recent) return;
+
+    recent.textContent = "در حال دریافت اطلاعات...";
+
+    try {
+      const data = await api("/api/customer/dashboard");
+      const orders = data.orders || {};
+      const cartItems = Number(data.cart_items || 0);
+      const recentOrders = Array.isArray(data.recent_orders) ? data.recent_orders : [];
+
+      $("vcDashOrders").textContent = Number(orders.total || 0).toLocaleString("fa-IR");
+      $("vcDashActive").textContent = Number(orders.active || 0).toLocaleString("fa-IR");
+      $("vcDashCart").textContent = cartItems.toLocaleString("fa-IR");
+      $("vcDashFavorites").textContent = Number(data.favorites || 0).toLocaleString("fa-IR");
+
+      recent.replaceChildren();
+
+      if (!recentOrders.length) {
+        recent.textContent = "هنوز سفارشی ثبت نکرده‌اید.";
+      } else {
+        recentOrders.forEach(order => {
+          const item = document.createElement("div");
+          item.style.cssText = "padding:9px 0;border-bottom:1px solid #eee";
+
+          const title = document.createElement("strong");
+          title.textContent = "سفارش " + (order.order_number || order.id);
+
+          const details = document.createElement("div");
+          details.style.marginTop = "5px";
+          details.textContent =
+            "مبلغ: " + Number(order.total_amount || 0).toLocaleString("fa-IR") +
+            " تومان | وضعیت: " + (order.order_status || "نامشخص");
+
+          item.append(title, details);
+          recent.appendChild(item);
+        });
+      }
+    } catch (error) {
+      recent.textContent = error.message || "دریافت اطلاعات داشبورد ناموفق بود.";
     }
   }
 
