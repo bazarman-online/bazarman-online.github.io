@@ -1062,6 +1062,133 @@ footer a {
   }
 }
 
+
+/* BAZARMAN_GREEN_GOLD_IDENTITY_V1 */
+:root {
+  --bm-ink: #123b2d;
+  --bm-ink-soft: #205640;
+  --bm-cream: #f7f6ef;
+  --bm-paper: #ffffff;
+  --bm-orange: #c5a253;
+  --bm-orange-dark: #a98637;
+  --bm-text: #25372f;
+  --bm-muted: #758078;
+  --bm-border: #e5e8df;
+  --bm-shadow: 0 12px 35px rgba(18, 59, 45, .09);
+}
+
+header {
+  background:
+    radial-gradient(ellipse at 5% 0%, rgba(211,181,105,.20), transparent 38%),
+    linear-gradient(130deg, #0b3024 0%, #124b36 58%, #1c6046 100%);
+}
+
+.logo {
+  color: #173d2e;
+  border-color: rgba(255,255,255,.35);
+  background: linear-gradient(145deg, #f0d99a, #c5a253);
+}
+
+.cart {
+  border-color: rgba(231,213,165,.35);
+  background: rgba(255,255,255,.09);
+}
+
+.cart:hover {
+  background: rgba(255,255,255,.18);
+}
+
+.searchbox button,
+.goldbtn,
+.ad button {
+  color: #173d2e;
+  background: linear-gradient(135deg, #ead69b, #c5a253);
+}
+
+.searchbox button:hover,
+.goldbtn:hover,
+.ad button:hover {
+  background: #d7bd79;
+}
+
+nav a:hover {
+  color: #806322;
+  background: #f6f0df;
+}
+
+.hero {
+  background:
+    radial-gradient(ellipse at 10% 95%, rgba(211,181,105,.23), transparent 36%),
+    linear-gradient(120deg, #103b2c, #205b43);
+}
+
+.eyebrow {
+  color: #ead69b;
+}
+
+.hero::after {
+  border-color: rgba(234,214,155,.17);
+}
+
+.sectionhead h2::before {
+  background: #c5a253;
+}
+
+.category:hover,
+.category.active,
+.category[aria-pressed="true"] {
+  border-color: rgba(197,162,83,.65);
+  background: #faf6e9;
+  box-shadow: 0 9px 22px rgba(145,116,48,.10);
+}
+
+.productbody button {
+  background: #174b37;
+}
+
+.productbody button:hover {
+  background: #a98637;
+}
+
+.ad {
+  border-color: #e8d9b5;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(197,162,83,.13), transparent 45%),
+    #fffdf7;
+}
+
+.adlabel {
+  color: #96752e;
+}
+
+footer {
+  background: #103b2c;
+}
+
+footer a,
+.video-ad-placeholder strong {
+  color: #ead69b;
+}
+
+#veranoAccountButton,
+#bazarmanSellerButton {
+  border-color: rgba(234,214,155,.38);
+}
+
+@media (max-width: 680px) {
+  .brand {
+    align-items: center;
+  }
+
+  #veranoAccountButton,
+  #bazarmanSellerButton,
+  #cartButton {
+    min-height: 40px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1424,7 +1551,7 @@ function renderProducts() {
    ${p.video_url && /^\/product-videos\/[a-f0-9]{32}\.mp4$/.test(p.video_url)
      ? `<video src="${escapeHTML(p.video_url)}" controls playsinline preload="metadata" style="width:100%;height:100%;object-fit:contain" aria-label="ویدئوی ${escapeHTML(p.name)}"></video>`
      : p.image_url && /^\/product-images\/[a-f0-9]{32}\.(?:jpg|png|webp)$/.test(p.image_url)
-       ? `<img src="${escapeHTML(p.image_url)}" alt="${escapeHTML(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.remove();this.parentElement.textContent='🛍️'">`
+       ? `<img src="${escapeHTML(window.BAZAARMAN_API_BASE_URL.replace(/\/+$/, "") + p.image_url)}" alt="${escapeHTML(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.remove();this.parentElement.textContent='🛍️'">`
        : p.emoji}
   </div>
   <div class="productbody">
@@ -1791,33 +1918,129 @@ marketLoadAds();
 
   function addAccountButton() {
     if ($("veranoAccountButton")) return;
+
     const cartButton = $("cartButton");
     if (!cartButton) return;
 
     const button = document.createElement("button");
     button.id = "veranoAccountButton";
     button.type = "button";
-    button.className = "cart";
-    button.style.marginInlineStart = "8px";
-    button.textContent = "ورود / حساب مشتری";
+    button.className = "cart bazarman-account-main";
+    button.textContent = "👤 حساب کاربری من";
+
+    button.style.cssText =
+      "margin-inline-start:8px;background:linear-gradient(135deg,#075b43,#13845e);" +
+      "color:white;border:1px solid #d6b45b;border-radius:13px;" +
+      "padding:11px 17px;font-weight:800;cursor:pointer;" +
+      "box-shadow:0 5px 16px #075b4325;";
+
     cartButton.insertAdjacentElement("beforebegin", button);
-    button.addEventListener("click", showAccount);
+    button.addEventListener("click", openBazarmanAccountHub);
   }
 
 
   function addSellerAccountButton() {
-    if (document.getElementById("bazarmanSellerButton")) return;
-    const cartButton = document.getElementById("cartButton");
-    if (!cartButton) return;
+    // ورود مشتری و فروشنده از دکمه یکپارچه حساب کاربری انجام می‌شود.
+  }
 
-    const button = document.createElement("button");
-    button.id = "bazarmanSellerButton";
-    button.type = "button";
-    button.className = "cart";
-    button.style.marginInlineStart = "8px";
-    button.textContent = "ورود فروشنده";
-    cartButton.insertAdjacentElement("beforebegin", button);
-    button.addEventListener("click", showSellerAccount);
+  function openBazarmanAccountHub() {
+    document.getElementById("bazarmanAccountHub")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "bazarmanAccountHub";
+    overlay.dir = "rtl";
+    overlay.style.cssText =
+      "position:fixed;inset:0;z-index:10020;background:#071d16c9;" +
+      "backdrop-filter:blur(7px);display:flex;align-items:center;" +
+      "justify-content:center;padding:16px;";
+
+    const box = document.createElement("div");
+    box.style.cssText =
+      "width:100%;max-width:470px;box-sizing:border-box;" +
+      "background:linear-gradient(160deg,#fffdf7,#f0f7f1);" +
+      "border:1px solid #d9bd72;border-radius:25px;padding:25px;" +
+      "box-shadow:0 24px 80px #0005;color:#173b2e;";
+
+    box.innerHTML = `
+      <div style="text-align:center;margin-bottom:23px">
+        <div style="font-size:35px;margin-bottom:8px">👤</div>
+        <h2 style="margin:0;color:#075b43;font-size:23px">
+          مرکز حساب‌های بازارمن
+        </h2>
+        <p style="color:#687b70;margin:9px 0 0;font-size:13px">
+          برای ورود به فضای اختصاصی خود انتخاب کنید
+        </p>
+      </div>
+
+      <div style="display:grid;gap:12px">
+        <button type="button" data-account="customer"
+          style="padding:17px;border-radius:15px;border:1px solid #d8c38b;
+          background:white;color:#075b43;font-size:16px;font-weight:800;
+          text-align:right;cursor:pointer">
+          🛍️ حساب مشتری
+          <small style="display:block;font-size:12px;font-weight:400;
+          color:#718077;margin-top:6px">
+            خریدها، سبد خرید و پیگیری سفارش‌ها
+          </small>
+        </button>
+
+        <button type="button" data-account="seller"
+          style="padding:17px;border-radius:15px;border:1px solid #d8c38b;
+          background:white;color:#075b43;font-size:16px;font-weight:800;
+          text-align:right;cursor:pointer">
+          🏪 حساب فروشنده
+          <small style="display:block;font-size:12px;font-weight:400;
+          color:#718077;margin-top:6px">
+            مدیریت فروشگاه، محصولات و سفارش‌ها
+          </small>
+        </button>
+
+        <button type="button" data-account="admin"
+          style="padding:17px;border-radius:15px;border:1px solid #d8c38b;
+          background:white;color:#075b43;font-size:16px;font-weight:800;
+          text-align:right;cursor:pointer">
+          🛡️ ورود مدیریت
+          <small style="display:block;font-size:12px;font-weight:400;
+          color:#718077;margin-top:6px">
+            ورود امن مدیر و مدیریت بازارمن
+          </small>
+        </button>
+      </div>
+
+      <button type="button" data-account="close"
+        style="width:100%;margin-top:18px;padding:12px;border:0;
+        border-radius:12px;background:#e7eee8;color:#315344;
+        font-weight:700;cursor:pointer">
+        بستن
+      </button>
+    `;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) overlay.remove();
+    });
+
+    box.querySelectorAll("[data-account]").forEach(button => {
+      button.addEventListener("click", () => {
+        const role = button.dataset.account;
+        overlay.remove();
+
+        if (role === "customer") {
+          showAccount();
+        } else if (role === "seller") {
+          showSellerAccount();
+        } else if (role === "admin") {
+          const base = window.BAZAARMAN_API_BASE_URL || "";
+          window.open(
+            base.replace(/\/$/, "") + "/admin/login",
+            "_blank",
+            "noopener"
+          );
+        }
+      });
+    });
   }
 
   async function showSellerAccount() {
@@ -1894,6 +2117,10 @@ marketLoadAds();
     };
 
     // BAZARMAN_SELLER_SESSION_RESTORE
+    // تا زمان بررسی نشست، فرم ورود و ثبت‌نام نمایش داده نشود.
+    el("bsmForm").hidden = true;
+    el("bsmSignedIn").hidden = true;
+
     function displaySeller(seller) {
       const statusText = seller.status === "active"
         ? "حساب فعال است. مرحلهٔ اتصال پنل محصولات هنوز باید تکمیل و آزمایش شود."
@@ -1917,10 +2144,20 @@ marketLoadAds();
           displaySeller(data.seller);
           showMessage("نشست فروشنده بازیابی شد.");
         }
-      } catch (_) {
-        // اگر نشست معتبر نیست، فرم ورود و ثبت‌نام در دسترس می‌ماند.
-        el("bsmForm").hidden = false;
+      } catch (error) {
         el("bsmSignedIn").hidden = true;
+
+        if (error && error.status === 401) {
+          // سرور صریحاً اعلام کرده که نشست معتبر نیست.
+          el("bsmForm").hidden = false;
+          showMessage("نشست معتبر فروشنده پیدا نشد؛ لطفاً وارد حساب شوید.");
+        } else {
+          // خطای شبکه را به‌اشتباه خروج از حساب تلقی نکن.
+          el("bsmForm").hidden = true;
+          showMessage(
+            "بررسی نشست انجام نشد؛ اتصال را بررسی کنید و پنجره حساب فروشنده را دوباره باز کنید."
+          );
+        }
       }
     }
 
@@ -1978,7 +2215,7 @@ marketLoadAds();
           $("veranoCustomerOverlay")?.remove();
           const customerButton = $("veranoAccountButton");
           if (customerButton) {
-            customerButton.textContent = "ورود / حساب مشتری";
+            customerButton.textContent = "👤 حساب کاربری من";
           }
 
           const seller = result.seller || {};
@@ -2015,7 +2252,7 @@ marketLoadAds();
         $("veranoCustomerOverlay")?.remove();
         const customerButton = $("veranoAccountButton");
         if (customerButton) {
-          customerButton.textContent = "ورود / حساب مشتری";
+          customerButton.textContent = "👤 حساب کاربری من";
         }
 
         el("bsmSignedIn").hidden = true;
@@ -2114,9 +2351,9 @@ marketLoadAds();
     if (customer) {
       $("vcCustomerName").textContent =
         "خوش آمدید، " + customer.full_name;
-      $("veranoAccountButton").textContent = "حساب: " + customer.full_name;
+      $("veranoAccountButton").textContent = "👤 حساب کاربری من";
     } else {
-      $("veranoAccountButton").textContent = "ورود / حساب مشتری";
+      $("veranoAccountButton").textContent = "👤 حساب کاربری من";
     }
   }
 
@@ -2235,7 +2472,7 @@ marketLoadAds();
         // ورود مشتری نشست قبلی فروشنده را جایگزین می‌کند.
         $("bazarmanSellerOverlay")?.remove();
         const sellerButton = $("bazarmanSellerButton");
-        if (sellerButton) sellerButton.textContent = "ورود فروشنده";
+        if (sellerButton) sellerButton.textContent = "👤 حساب کاربری من";
 
         customer = data.customer;
         $("vcOtpSection").hidden = true;
@@ -2648,10 +2885,13 @@ marketLoadAds();
       const data = await api("/api/customer/me");
       customer = data.customer;
       await refreshCart();
-    } catch (_) {
-      customer = null;
-      serverItems = [];
-      renderCartCount();
+    } catch (error) {
+      if (error && error.status === 401) {
+        customer = null;
+        serverItems = [];
+        renderCartCount();
+      }
+      // خطای شبکه را با خروج واقعی مشتری اشتباه نگیر.
     }
     if ($("veranoAccountButton")) renderAccount();
   }
