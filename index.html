@@ -2273,19 +2273,315 @@ marketLoadAds();
     const overlay = document.createElement("div");
     overlay.id = "veranoCustomerOverlay";
     overlay.style.cssText =
-      "position:fixed;inset:0;background:#0009;z-index:10001;" +
-      "display:flex;align-items:center;justify-content:center;padding:14px";
+      "position:fixed;inset:0;background:rgba(8,30,22,.72);backdrop-filter:blur(7px);" +
+      "z-index:10001;display:flex;align-items:center;justify-content:center;padding:14px";
 
     const box = document.createElement("div");
     box.style.cssText =
-      "background:#fffdf6;color:#173b2e;border-radius:18px;" +
-      "padding:22px;width:100%;max-width:440px;max-height:90vh;overflow:auto";
+      "background:#f7faf8;color:#173b2e;border-radius:26px;" +
+      "padding:0;width:100%;max-width:760px;max-height:92vh;overflow:auto;" +
+      "box-shadow:0 28px 90px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.7);" +
+      "font-family:inherit";
 
     box.innerHTML = `
-      <div style="display:flex;justify-content:space-between;gap:12px">
-        <h2 style="margin:0 0 18px">حساب مشتری بازارمن</h2>
-        <button type="button" id="vcClose">بستن ✕</button>
+      <style>
+        #veranoCustomerOverlay * { box-sizing:border-box; }
+        #veranoCustomerOverlay input {
+          border:1px solid #dce8e1;border-radius:12px;background:#fff;
+          color:#173b2e;font:inherit;outline:none;
+        }
+        #veranoCustomerOverlay input:focus {
+          border-color:#159568;box-shadow:0 0 0 3px rgba(21,149,104,.12);
+        }
+        #veranoCustomerOverlay .vc-stat {
+          padding:18px;border-radius:18px;background:#fff;
+          border:1px solid #e4eee8;box-shadow:0 5px 18px rgba(25,75,48,.045);
+          min-width:0;
+        }
+        #veranoCustomerOverlay .vc-stat small {
+          display:block;color:#718078;font-size:12px;margin-bottom:9px;
+        }
+        #veranoCustomerOverlay .vc-stat strong {
+          display:block;font-size:27px;color:#087f56;
+        }
+        #veranoCustomerOverlay button {
+          border-radius:12px;cursor:pointer;font:inherit;font-weight:700;
+        }
+        @media(max-width:520px) {
+          #veranoCustomerOverlay .vc-stat { padding:13px; }
+          #veranoCustomerOverlay .vc-stat strong { font-size:22px; }
+        }
+
+        #veranoCustomerOverlay .vc-pro-dashboard {
+          margin:0;
+          padding:0;
+          color:#183b31;
+        }
+        #veranoCustomerOverlay .vc-pro-hero {
+          position:relative;
+          overflow:hidden;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          min-height:190px;
+          padding:25px;
+          border-radius:23px;
+          color:#fff;
+          background:linear-gradient(120deg,#073f32 0%,#087d58 58%,#16a477 100%);
+          box-shadow:0 13px 30px rgba(7,95,65,.17);
+        }
+        #veranoCustomerOverlay .vc-pro-hero-content {
+          position:relative;
+          z-index:2;
+        }
+        #veranoCustomerOverlay .vc-pro-eyebrow {
+          display:block;
+          font-size:10px;
+          letter-spacing:2px;
+          color:#b7ead5;
+          font-weight:800;
+        }
+        #veranoCustomerOverlay .vc-pro-hero h3 {
+          color:#fff;
+          font-size:25px;
+          margin:12px 0 7px;
+        }
+        #veranoCustomerOverlay .vc-pro-hero p {
+          margin:0;
+          color:#d7f3e7;
+          font-size:12px;
+        }
+        #veranoCustomerOverlay .vc-pro-welcome {
+          display:flex;
+          align-items:center;
+          gap:9px;
+          margin-top:19px;
+          font-size:13px;
+        }
+        #veranoCustomerOverlay .vc-pro-avatar {
+          display:grid;
+          place-items:center;
+          width:35px;
+          height:35px;
+          border-radius:12px;
+          background:rgba(255,255,255,.17);
+          font-size:18px;
+        }
+        #veranoCustomerOverlay .vc-pro-hero-art {
+          position:relative;
+          display:grid;
+          place-items:center;
+          width:125px;
+          height:125px;
+          margin-left:12px;
+          border:1px solid rgba(255,255,255,.22);
+          border-radius:35px;
+          background:rgba(255,255,255,.10);
+          transform:rotate(-8deg);
+        }
+        #veranoCustomerOverlay .vc-pro-hero-art span {
+          font-size:65px;
+          transform:rotate(8deg);
+          filter:drop-shadow(0 9px 9px rgba(0,0,0,.18));
+        }
+        #veranoCustomerOverlay .vc-pro-hero-art i,
+        #veranoCustomerOverlay .vc-pro-hero-art b {
+          position:absolute;
+          display:block;
+          border-radius:50%;
+          background:#b6edcf;
+        }
+        #veranoCustomerOverlay .vc-pro-hero-art i {
+          width:13px;height:13px;top:5px;right:8px;
+        }
+        #veranoCustomerOverlay .vc-pro-hero-art b {
+          width:8px;height:8px;bottom:12px;left:7px;
+          background:#f5d78c;
+        }
+        #veranoCustomerOverlay .vc-pro-section-heading,
+        #veranoCustomerOverlay .vc-pro-order-heading {
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:12px;
+        }
+        #veranoCustomerOverlay .vc-pro-section-heading {
+          margin:25px 2px 13px;
+        }
+        #veranoCustomerOverlay .vc-pro-section-heading > div > span,
+        #veranoCustomerOverlay .vc-pro-order-heading > div > span {
+          color:#159568;
+          font-size:9px;
+          font-weight:900;
+          letter-spacing:1.5px;
+        }
+        #veranoCustomerOverlay .vc-pro-section-heading h4,
+        #veranoCustomerOverlay .vc-pro-order-heading h4 {
+          margin:4px 0 0;
+          color:#173b32;
+          font-size:16px;
+        }
+        #veranoCustomerOverlay .vc-pro-live {
+          display:flex;
+          align-items:center;
+          gap:6px;
+          padding:7px 10px;
+          border-radius:30px;
+          background:#e9f7ef;
+          color:#188354;
+          font-size:10px;
+          white-space:nowrap;
+        }
+        #veranoCustomerOverlay .vc-pro-live i {
+          width:7px;height:7px;
+          border-radius:50%;
+          background:#20ae70;
+          box-shadow:0 0 0 4px rgba(32,174,112,.12);
+        }
+        #veranoCustomerOverlay .vc-pro-stats {
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:12px;
+        }
+        #veranoCustomerOverlay .vc-pro-stats .vc-stat {
+          position:relative;
+          overflow:hidden;
+          min-height:145px;
+          padding:16px;
+          border:1px solid #e9eee9;
+          border-radius:19px;
+          background:#fff;
+          box-shadow:0 5px 18px rgba(22,65,43,.045);
+        }
+        #veranoCustomerOverlay .vc-stat-icon {
+          display:grid;
+          place-items:center;
+          width:38px;height:38px;
+          margin-bottom:12px;
+          border-radius:13px;
+          background:#e8f5ed;
+          font-size:19px;
+        }
+        #veranoCustomerOverlay .vc-stat small {
+          display:block;
+          margin-bottom:7px;
+          color:#73847a;
+          font-size:11px;
+        }
+        #veranoCustomerOverlay .vc-stat strong {
+          display:block;
+          color:#153f31;
+          font-size:27px;
+          line-height:1.3;
+        }
+        #veranoCustomerOverlay .vc-stat > span {
+          display:block;
+          margin-top:5px;
+          color:#9aa69f;
+          font-size:9px;
+        }
+        #veranoCustomerOverlay .vc-stat-orders {border-top:3px solid #159568!important}
+        #veranoCustomerOverlay .vc-stat-active {border-top:3px solid #4388d7!important}
+        #veranoCustomerOverlay .vc-stat-cart {border-top:3px solid #e8a43c!important}
+        #veranoCustomerOverlay .vc-stat-favorites {border-top:3px solid #d86d91!important}
+        #veranoCustomerOverlay .vc-stat-active .vc-stat-icon {background:#edf4ff}
+        #veranoCustomerOverlay .vc-stat-cart .vc-stat-icon {background:#fff5e6}
+        #veranoCustomerOverlay .vc-stat-favorites .vc-stat-icon {background:#fff0f4}
+        #veranoCustomerOverlay .vc-pro-order-panel {
+          margin-top:17px;
+          padding:18px;
+          border:1px solid #e9eee9;
+          border-radius:20px;
+          background:#fff;
+          box-shadow:0 5px 18px rgba(22,65,43,.04);
+        }
+        #veranoCustomerOverlay .vc-pro-order-heading p {
+          margin:6px 0 0;
+          color:#8a9990;
+          font-size:11px;
+        }
+        #veranoCustomerOverlay .vc-pro-order-icon {
+          display:grid;
+          place-items:center;
+          width:42px;height:42px;
+          border-radius:14px;
+          background:#edf7f1;
+          font-size:21px;
+        }
+        #veranoCustomerOverlay .vc-pro-recent {
+          margin-top:15px;
+          color:#53685d;
+          font-size:12px;
+          line-height:1.9;
+        }
+        #veranoCustomerOverlay .vc-pro-recent > div {
+          padding:13px 0;
+          border-bottom:1px solid #edf1ed;
+        }
+        #veranoCustomerOverlay .vc-pro-recent > div:last-child {
+          border-bottom:0;
+        }
+        #veranoCustomerOverlay .vc-pro-refresh {
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          gap:9px;
+          width:100%;
+          margin-top:15px;
+          padding:14px;
+          border:0;
+          border-radius:14px;
+          background:linear-gradient(100deg,#087a55,#159568);
+          color:#fff;
+          font-size:13px;
+          box-shadow:0 7px 16px rgba(8,122,85,.17);
+        }
+        #veranoCustomerOverlay .vc-pro-refresh span {
+          font-size:20px;
+        }
+        #veranoCustomerOverlay .vc-pro-footer {
+          display:flex;
+          align-items:center;
+          gap:8px;
+          margin-top:13px;
+          padding:12px;
+          border-radius:13px;
+          background:#edf6f0;
+          color:#668174;
+          font-size:10px;
+        }
+        @media(max-width:520px) {
+          #veranoCustomerOverlay .vc-pro-hero {
+            min-height:165px;
+            padding:19px;
+          }
+          #veranoCustomerOverlay .vc-pro-hero h3 {font-size:20px}
+          #veranoCustomerOverlay .vc-pro-hero-art {
+            width:78px;height:78px;
+            border-radius:24px;
+          }
+          #veranoCustomerOverlay .vc-pro-hero-art span {font-size:42px}
+          #veranoCustomerOverlay .vc-pro-stats .vc-stat {
+            min-height:132px;
+            padding:13px;
+          }
+          #veranoCustomerOverlay .vc-stat strong {font-size:23px}
+        }
+        @media(max-width:360px) {
+          #veranoCustomerOverlay .vc-pro-hero-art {display:none}
+          #veranoCustomerOverlay .vc-pro-stats {gap:8px}
+        }
+
+      </style>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 24px;background:linear-gradient(120deg,#075b40,#159568);color:#fff">
+        <div>
+          <div style="font-size:12px;opacity:.85;margin-bottom:5px">BAZARMAN · حساب کاربری</div>
+          <h2 style="margin:0;font-size:21px;color:#fff">حساب مشتری بازارمن</h2>
+        </div>
+        <button type="button" id="vcClose" style="padding:9px 13px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.13);color:#fff">بستن ✕</button>
       </div>
+      <div style="padding:24px">
       <div id="vcAuthForm">
         <label>نام و نام خانوادگی (برای ثبت‌نام)</label>
         <input id="vcName" autocomplete="name" maxlength="120"
@@ -2309,41 +2605,89 @@ marketLoadAds();
         </div>
       </div>
       <div id="vcSignedIn" hidden>
-        <p id="vcCustomerName"></p>
 
-        <section id="vcDashboard" dir="rtl"
-          style="margin:16px 0;padding:14px;border:1px solid #e5e7eb;border-radius:18px;background:#f8fafc">
-          <h3 style="margin:0 0 14px;color:#173b32">داشبورد مشتری</h3>
+        <section id="vcDashboard" class="vc-pro-dashboard" dir="rtl">
 
-          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
-              <small>همه سفارش‌ها</small>
-              <strong id="vcDashOrders" style="display:block;font-size:23px">—</strong>
+          <div class="vc-pro-hero">
+            <div class="vc-pro-hero-content">
+              <span class="vc-pro-eyebrow">BAZARMAN · CUSTOMER SPACE</span>
+              <h3>داشبورد حساب شما</h3>
+              <p>همه خریدها و فعالیت‌های شما در یک نگاه</p>
+              <div class="vc-pro-welcome">
+                <span class="vc-pro-avatar">👤</span>
+                <strong id="vcCustomerName">خوش آمدید</strong>
+              </div>
             </div>
-            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
-              <small>سفارش‌های در جریان</small>
-              <strong id="vcDashActive" style="display:block;font-size:23px">—</strong>
-            </div>
-            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
-              <small>اقلام سبد خرید</small>
-              <strong id="vcDashCart" style="display:block;font-size:23px">—</strong>
-            </div>
-            <div style="padding:13px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
-              <small>علاقه‌مندی‌ها</small>
-              <strong id="vcDashFavorites" style="display:block;font-size:23px">—</strong>
+            <div class="vc-pro-hero-art" aria-hidden="true">
+              <span>🛍️</span>
+              <i></i><b></b>
             </div>
           </div>
 
-          <div style="margin-top:14px;padding:12px;border-radius:13px;background:#fff;border:1px solid #e5e7eb">
-            <strong>آخرین سفارش‌ها</strong>
-            <div id="vcDashRecent" style="margin-top:8px;font-size:13px;color:#475569">
+          <div class="vc-pro-section-heading">
+            <div>
+              <span>OVERVIEW</span>
+              <h4>خلاصه حساب کاربری</h4>
+            </div>
+            <span class="vc-pro-live"><i></i> وضعیت حساب</span>
+          </div>
+
+          <div class="vc-pro-stats">
+            <article class="vc-stat vc-stat-orders">
+              <div class="vc-stat-icon">📦</div>
+              <small>همه سفارش‌ها</small>
+              <strong id="vcDashOrders">—</strong>
+              <span>مجموع خریدهای شما</span>
+            </article>
+
+            <article class="vc-stat vc-stat-active">
+              <div class="vc-stat-icon">🚚</div>
+              <small>سفارش‌های در جریان</small>
+              <strong id="vcDashActive">—</strong>
+              <span>سفارش‌های در حال پیگیری</span>
+            </article>
+
+            <article class="vc-stat vc-stat-cart">
+              <div class="vc-stat-icon">🛒</div>
+              <small>اقلام سبد خرید</small>
+              <strong id="vcDashCart">—</strong>
+              <span>محصولات انتخاب‌شده</span>
+            </article>
+
+            <article class="vc-stat vc-stat-favorites">
+              <div class="vc-stat-icon">♡</div>
+              <small>علاقه‌مندی‌ها</small>
+              <strong id="vcDashFavorites">—</strong>
+              <span>محصولات موردعلاقه</span>
+            </article>
+          </div>
+
+          <div class="vc-pro-order-panel">
+            <div class="vc-pro-order-heading">
+              <div>
+                <span>YOUR ACTIVITY</span>
+                <h4>آخرین سفارش‌ها</h4>
+                <p>آخرین خریدهای ثبت‌شده در بازارمن</p>
+              </div>
+              <span class="vc-pro-order-icon">🧾</span>
+            </div>
+
+            <div id="vcDashRecent" class="vc-pro-recent">
               در حال دریافت اطلاعات...
             </div>
           </div>
 
-          <button type="button" id="vcDashRefresh"
-            style="margin-top:12px;width:100%">به‌روزرسانی داشبورد</button>
+          <button type="button" id="vcDashRefresh" class="vc-pro-refresh">
+            <span>↻</span>
+            به‌روزرسانی اطلاعات داشبورد
+          </button>
+
+          <div class="vc-pro-footer">
+            <span>🛡️</span>
+            اطلاعات حساب و سبد خرید شما در بازارمن نگهداری می‌شود.
+          </div>
         </section>
+
 
         <p>سبد خرید شما روی سرور ذخیره می‌شود.</p>
         <button type="button" id="vcLogout">خروج از حساب</button>
@@ -2360,7 +2704,8 @@ marketLoadAds();
       </div>
       <p style="font-size:12px;color:#666">
         برای فعال‌کردن حساب مشتری، شماره موبایل باید تأیید شود.
-      </p>`;
+      </p>
+      </div>`;
 
     overlay.appendChild(box);
     document.body.appendChild(overlay);
